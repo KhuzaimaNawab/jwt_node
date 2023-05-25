@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt')
 const fs = require('fs')
+const jwt = require('jsonwebtoken')
 
 const encrytUserPassword = (req, res) => {
     const { email, password } = req.body
@@ -29,12 +30,19 @@ const encrytUserPassword = (req, res) => {
                     console.log(err)
                 }
             })
+            jwt.sign(req.body, process.env.SECRET, { expiresIn: "1h" }, (err, token) => {
+                if (err) {
+                    res.status(404).json({
+                        "message": "Error Occured"
+                    })
+                } else {
+                    res.json({
+                        "token": token,
+                    })
+                }
+            })
         })
 
-
-        res.json({
-            "message": "Account created successfully"
-        })
     })
 }
 

@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt')
 const fs = require('fs')
+const checkToken = require('./checkTokenRoute')
 
-const authenticateUser = (req, res) => {
-    const myUsers = {}
+const authenticateUser = (req, res, token) => {
     fs.readFile('users/users.json', (err, data) => {
         if (err) throw err
         const { email, password } = req.body
@@ -16,9 +16,7 @@ const authenticateUser = (req, res) => {
                         "message": "Password not matched"
                     })
                 } else {
-                    res.json({
-                        "message": "Login succesfully"
-                    })
+                    checkToken.checkTokenRoute(req, res, token)
                 }
             })
         } else {

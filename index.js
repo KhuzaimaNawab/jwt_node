@@ -9,7 +9,14 @@ const port = process.env.PORT || 3001
 app.use(express.json())
 
 app.get('/login', (req, res) => {
-    authenticateUser.authenticateUser(req, res)
+    const header = req.headers['authorization'];
+
+    if (typeof header !== 'undefined') {
+        const bearer = header.split(' ');
+        const token = bearer[1];
+        req.token = token;
+        authenticateUser.authenticateUser(req, res,req.token)
+    }
 })
 
 app.post('/login', (req, res) => {
